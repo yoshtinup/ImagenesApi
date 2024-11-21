@@ -2,20 +2,21 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const cors = require('cors');  // <-- Importa cors
+const cors = require('cors');
 
 const app = express();
 const PORT = 3000;
 
 // Configura CORS para permitir todas las solicitudes
-app.use(cors());  // <-- Añade cors como middleware
+app.use(cors());
 
-// Configuración de Multer para la subida de archivos
+// Carpeta para guardar las imágenes subidas
 const UPLOAD_FOLDER = './uploads';
 if (!fs.existsSync(UPLOAD_FOLDER)) {
     fs.mkdirSync(UPLOAD_FOLDER);
 }
 
+// Configuración de almacenamiento de Multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, UPLOAD_FOLDER);
@@ -25,17 +26,24 @@ const storage = multer.diskStorage({
     }
 });
 
+// Configuración de Multer para subida de archivos
 const upload = multer({
     storage: storage,
     limits: { fileSize: 5 * 1024 * 1024 }, // Tamaño máximo de 5 MB
     fileFilter: (req, file, cb) => {
+        console.log('--- Información del archivo recibido ---');
+        console.log('Nombre del archivo:', file.originalname);
+        console.log('Extensión del archivo:', path.extname(file.originalname).toLowerCase());
+        console.log('Tipo MIME del archivo:', file.mimetype);
+
         const filetypes = /jpeg|jpg|png|gif/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = filetypes.test(file.mimetype);
 
-        if (mimetype && extname) {
-            return cb(null, true);
+        if (extname) {
+            // Permitir el archivo, ignorando la validación MIME por problemas de detección incorrecta
+            cb(null, true);
         } else {
+            console.error('Error: Solo se permiten imágenes (jpeg, jpg, png, gif)');
             cb('Error: Solo se permiten imágenes (jpeg, jpg, png, gif)');
         }
     }
