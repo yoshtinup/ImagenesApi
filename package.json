@@ -1,10 +1,11 @@
 {
   "name": "api_imagenes",
   "version": "1.0.0",
-  "description": "",
+  "description": "API de imágenes con arquitectura hexagonal",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "node app.js"
   },
   "author": "",
   "license": "ISC",
