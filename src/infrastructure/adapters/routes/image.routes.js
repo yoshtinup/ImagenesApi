@@ -5,7 +5,7 @@ function createImageRoutes(imageController) {
     const router = express.Router();
 
     // Ruta para subir una imagen
-    router.post('/upload', upload.single('image'), (req, res) => {
+    router.post('/imagen', upload.single('image'), (req, res) => {
         imageController.uploadImage(req, res);
     });
 
